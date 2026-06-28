@@ -85,7 +85,8 @@ export default function AdminLoginPage() {
         }}
       />
 
-      <div className="relative w-full max-w-sm rounded-[3px] border border-zinc-800 bg-zinc-900 p-8">
+      <div className="login-glow relative w-full max-w-sm overflow-hidden rounded-[3px] p-[1.5px]">
+       <div className="relative z-10 rounded-[2px] border border-zinc-800 bg-zinc-900 p-8">
         <div className="mb-6 flex items-center gap-2 text-indigo-400">
           <ShieldIcon />
           <span className="text-sm font-bold uppercase tracking-[0.2em]">
@@ -173,10 +174,10 @@ export default function AdminLoginPage() {
         </form>
 
         {/* Demo admin account */}
-        <div className="mt-6 rounded-[2px] border border-zinc-800 bg-zinc-800/40 px-3 py-2.5 text-xs leading-relaxed text-zinc-400">
-          <span className="font-semibold text-zinc-300">Demo admin:</span>{" "}
-          admin@example.com / admin123
-        </div>
+        {/* <div className="mt-6 rounded-[2px] border border-zinc-800 bg-zinc-800/40 px-3 py-2.5 text-xs leading-relaxed text-zinc-400">
+          <span className="font-semibold text-opacity-100 text-zinc-300">Demo admin:</span>{" "}
+           admin@example.com / admin123
+        </div> */}
 
         <p className="mt-6 text-sm text-zinc-400">
           Not an admin?{" "}
@@ -187,7 +188,42 @@ export default function AdminLoginPage() {
             User login
           </Link>
         </p>
+       </div>
       </div>
+
+      <style jsx>{`
+        @property --line-angle {
+          syntax: "<angle>";
+          initial-value: 0deg;
+          inherits: false;
+        }
+        .login-glow::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          background: conic-gradient(
+            from var(--line-angle),
+            transparent 0%,
+            transparent 72%,
+            rgba(255, 255, 255, 0.15) 82%,
+            #ffffff 90%,
+            rgba(255, 255, 255, 0.15) 96%,
+            transparent 100%
+          );
+          z-index: 0;
+        }
+        @media (prefers-reduced-motion: no-preference) {
+          .login-glow::before {
+            animation: login-line-spin 4s linear infinite;
+          }
+        }
+        @keyframes login-line-spin {
+          to {
+            --line-angle: 360deg;
+          }
+        }
+      `}</style>
     </div>
   );
 }
