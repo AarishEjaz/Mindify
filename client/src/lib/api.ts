@@ -4,7 +4,7 @@ import axios from "axios";
 // through here, so the base URL and the auth token are configured in a
 // single place.
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api" || "https://mindify-t7z8.onrender.com",
   headers: {
     "Content-Type": "application/json",
   },
