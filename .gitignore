@@ -1,0 +1,59 @@
+# ---------------------------------------------------------------------------
+# Root .gitignore for the Psychometric Test Platform (backend + client)
+# These files should NOT be pushed to GitHub.
+# ---------------------------------------------------------------------------
+
+# Dependencies (re-installed with `npm install`)
+node_modules/
+**/node_modules/
+.pnp
+.pnp.*
+
+# Environment variables / secrets (DB URL, JWT secret, etc.)
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+
+# Next.js build output
+.next/
+**/.next/
+out/
+**/out/
+
+# Production build folders
+build/
+dist/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Testing / coverage
+coverage/
+.nyc_output/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Deployment
+.vercel
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor folders
+.idea/
+.vscode/
+*.swp
+*.pem
+
+# Claude Code local config / memory (not meant to be shared)
+.claude/
