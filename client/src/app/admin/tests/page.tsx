@@ -105,24 +105,35 @@ function AdminTestsContent() {
   };
 
   const inputClass =
-    "w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none";
+    "w-full rounded-[2px] border border-zinc-300 px-3 py-2.5 text-sm transition-colors focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600";
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4 py-10">
-      <h1 className="mb-6 text-2xl font-semibold text-zinc-800">Manage Tests</h1>
+    <div className="mx-auto w-full max-w-4xl px-6 py-10 sm:px-10">
+      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-indigo-600">
+        Admin
+      </p>
+      <h1 className="mb-8 mt-3 text-3xl font-extrabold tracking-tight text-zinc-900">
+        Manage Tests
+      </h1>
 
       {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
-      {message && <p className="mb-4 text-sm text-green-700">{message}</p>}
+      {message && (
+        <p className="mb-4 rounded-[2px] border-l-2 border-emerald-500 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+          {message}
+        </p>
+      )}
 
       {/* Existing tests */}
       <div className="mb-10">
-        <h2 className="mb-3 font-semibold text-zinc-700">Existing tests</h2>
+        <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+          Existing tests
+        </h2>
         {loading && <p className="text-zinc-500">Loading...</p>}
         <div className="flex flex-col gap-3">
           {tests.map((test) => (
             <div
               key={test._id}
-              className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white p-4"
+              className="flex items-center justify-between rounded-[3px] border border-zinc-200 bg-white p-4"
             >
               <div>
                 <p className="font-medium text-zinc-800">{test.title}</p>
@@ -133,7 +144,7 @@ function AdminTestsContent() {
               </div>
               <button
                 onClick={() => toggleActive(test)}
-                className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-100"
+                className="cursor-pointer rounded-[2px] border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 transition-colors hover:bg-zinc-100"
               >
                 {test.isActive ? "Deactivate" : "Activate"}
               </button>
@@ -143,11 +154,13 @@ function AdminTestsContent() {
       </div>
 
       {/* Create test form */}
-      <div className="rounded-lg border border-zinc-200 bg-white p-6">
-        <h2 className="mb-4 font-semibold text-zinc-700">Create a new test</h2>
+      <div className="rounded-[3px] border border-zinc-200 bg-white p-6">
+        <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+          Create a new test
+        </h2>
         <form onSubmit={handleCreate} className="flex flex-col gap-4">
           <div>
-            <label className="mb-1 block text-sm text-zinc-600">Title</label>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-zinc-500">Title</label>
             <input
               className={inputClass}
               value={title}
@@ -157,7 +170,7 @@ function AdminTestsContent() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm text-zinc-600">Description</label>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-zinc-500">Description</label>
             <textarea
               className={inputClass}
               value={description}
@@ -168,7 +181,7 @@ function AdminTestsContent() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-sm text-zinc-600">Type</label>
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-zinc-500">Type</label>
               <select
                 className={inputClass}
                 value={type}
@@ -181,7 +194,7 @@ function AdminTestsContent() {
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-sm text-zinc-600">
+              <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-zinc-500">
                 Duration (minutes)
               </label>
               <input
@@ -195,7 +208,7 @@ function AdminTestsContent() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm text-zinc-600">Instructions</label>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-zinc-500">Instructions</label>
             <textarea
               className={inputClass}
               value={instructions}
@@ -204,7 +217,7 @@ function AdminTestsContent() {
           </div>
 
           <div>
-            <label className="mb-1 block text-sm text-zinc-600">Disclaimer</label>
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-zinc-500">Disclaimer</label>
             <textarea
               className={inputClass}
               value={disclaimer}
@@ -216,11 +229,13 @@ function AdminTestsContent() {
           {/* Traits editor */}
           <div>
             <div className="mb-2 flex items-center justify-between">
-              <label className="text-sm font-medium text-zinc-700">Traits</label>
+              <label className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
+                Traits
+              </label>
               <button
                 type="button"
                 onClick={addTraitRow}
-                className="text-sm text-indigo-600 hover:underline"
+                className="cursor-pointer text-sm font-semibold text-indigo-600 hover:underline"
               >
                 + Add trait
               </button>
@@ -230,7 +245,7 @@ function AdminTestsContent() {
               {traits.map((trait, index) => (
                 <div
                   key={index}
-                  className="rounded-md border border-zinc-200 p-3"
+                  className="rounded-[2px] border border-zinc-200 bg-zinc-50/50 p-3"
                 >
                   <div className="mb-2 flex items-center justify-between">
                     <span className="text-xs text-zinc-500">
@@ -284,7 +299,7 @@ function AdminTestsContent() {
           <button
             type="submit"
             disabled={saving}
-            className="self-start rounded-md bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+            className="cursor-pointer self-start rounded-[2px] bg-indigo-600 px-5 py-2.5 text-sm font-semibold uppercase tracking-wide text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {saving ? "Saving..." : "Create test"}
           </button>

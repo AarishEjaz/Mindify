@@ -3,6 +3,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const connectDB = require("../config/db");
 const User = require("../models/User");
+const Admin = require("../models/Admin");
 const Test = require("../models/Test");
 const Question = require("../models/Question");
 const Attempt = require("../models/Attempt");
@@ -114,6 +115,7 @@ const seed = async () => {
   // Start clean so the seed can be run again safely.
   await Promise.all([
     User.deleteMany({}),
+    Admin.deleteMany({}),
     Test.deleteMany({}),
     Question.deleteMany({}),
     Attempt.deleteMany({}),
@@ -121,21 +123,20 @@ const seed = async () => {
   ]);
   console.log("Cleared existing data.");
 
-  // Create a demo admin and a demo user. Passwords are hashed by the
-  // User model, so we create them one by one (not with insertMany).
-  await User.create({
+  // Create a demo admin (in the Admin collection) and a demo user (in the
+  // User collection). Passwords are hashed by the model hooks, so we
+  // create them one by one (not with insertMany).
+  await Admin.create({
     name: "Admin User",
     email: "admin@example.com",
     password: "admin123",
-    role: "admin",
   });
   await User.create({
     name: "Test User",
     email: "user@example.com",
     password: "user123",
-    role: "user",
   });
-  console.log("Created admin@example.com / admin123 and user@example.com / user123");
+  console.log("Created admin@example.com / admin123 (Admin) and user@example.com / user123 (User)");
 
   // Create the one MVP test.
   const test = await Test.create({

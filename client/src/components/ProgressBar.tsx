@@ -1,4 +1,4 @@
-// A simple progress bar that shows how many questions are answered.
+// A sharp progress bar that shows how many questions are answered.
 export default function ProgressBar({
   answered,
   total,
@@ -11,15 +11,15 @@ export default function ProgressBar({
 
   return (
     <div className="w-full">
-      <div className="mb-1 flex justify-between text-sm text-zinc-600">
+      <div className="mb-1.5 flex justify-between text-xs font-medium uppercase tracking-wide text-zinc-500">
         <span>
           {answered} of {total} answered
         </span>
-        <span>{percent}%</span>
+        <span className="tabular-nums text-zinc-900">{percent}%</span>
       </div>
-      <div className="h-2.5 w-full rounded-full bg-zinc-200">
+      <div className="h-1.5 w-full overflow-hidden bg-zinc-200">
         <div
-          className="h-2.5 rounded-full bg-indigo-600 transition-all"
+          className="h-full bg-indigo-600 transition-all duration-500"
           style={{ width: `${percent}%` }}
         />
       </div>

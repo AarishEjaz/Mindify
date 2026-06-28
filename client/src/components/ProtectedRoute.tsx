@@ -27,7 +27,8 @@ export default function ProtectedRoute({
       return;
     }
     if (!user) {
-      router.replace("/login");
+      // Send people to the matching login page.
+      router.replace(adminOnly ? "/admin/login" : "/login");
       return;
     }
     if (adminOnly && user.role !== "admin") {

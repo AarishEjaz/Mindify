@@ -13,6 +13,7 @@ interface AuthContextValue {
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<User>;
+  loginAdmin: (email: string, password: string) => Promise<User>;
   register: (name: string, email: string, password: string) => Promise<User>;
   logout: () => void;
 }
@@ -51,6 +52,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Separate admin login — hits the admin-only backend route.
+  const loginAdmin = async (email: string, password: string) => {
+    try {
+      const response = await api.post("/auth/admin/login", { email, password });
+      const { token, user: loggedInUser } = response.data.data;
+      saveSession(token, loggedInUser);
+      return loggedInUser as User;
+    } catch (error) {
+      throw new Error(getErrorMessage(error));
+    }
+  };
+
   const register = async (name: string, email: string, password: string) => {
     try {
       const response = await api.post("/auth/register", { name, email, password });
@@ -69,7 +82,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ user, loading, login, loginAdmin, register, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

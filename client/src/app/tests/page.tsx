@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { motion } from "motion/react";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import api, { getErrorMessage } from "@/lib/api";
 import { Test, Pagination } from "@/lib/types";
+import { containerVariants, itemVariants } from "@/lib/motion";
 
 function TestListContent() {
   const [tests, setTests] = useState<Test[]>([]);
@@ -13,7 +15,6 @@ function TestListContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Reload whenever the page number changes.
   useEffect(() => {
     const loadTests = async () => {
       setLoading(true);
@@ -30,55 +31,79 @@ function TestListContent() {
     loadTests();
   }, [page]);
 
+  const pad = "px-6 sm:px-10 lg:px-16";
+  const pagerBtn =
+    "cursor-pointer rounded-[2px] border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-50";
+
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 py-10">
-      <h1 className="mb-6 text-2xl font-semibold text-zinc-800">All Tests</h1>
-
-      {loading && <p className="text-zinc-500">Loading...</p>}
-      {error && <p className="text-red-600">{error}</p>}
-
-      <div className="flex flex-col gap-4">
-        {tests.map((test) => (
-          <div
-            key={test._id}
-            className="flex flex-col gap-3 rounded-lg border border-zinc-200 bg-white p-5 sm:flex-row sm:items-center sm:justify-between"
-          >
-            <div>
-              <h2 className="font-semibold text-zinc-800">{test.title}</h2>
-              <p className="text-sm text-zinc-600">{test.description}</p>
-            </div>
-            <Link
-              href={`/tests/${test._id}/instructions`}
-              className="shrink-0 rounded-md bg-indigo-600 px-4 py-2 text-center text-sm font-medium text-white hover:bg-indigo-700"
-            >
-              View test
-            </Link>
-          </div>
-        ))}
-      </div>
-
-      {/* Pagination controls (only shown when there is more than one page) */}
-      {pagination && pagination.totalPages > 1 && (
-        <div className="mt-6 flex items-center justify-center gap-4">
-          <button
-            onClick={() => setPage(page - 1)}
-            disabled={page <= 1}
-            className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm disabled:opacity-50"
-          >
-            Previous
-          </button>
-          <span className="text-sm text-zinc-600">
-            Page {pagination.page} of {pagination.totalPages}
-          </span>
-          <button
-            onClick={() => setPage(page + 1)}
-            disabled={page >= pagination.totalPages}
-            className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm disabled:opacity-50"
-          >
-            Next
-          </button>
+    <div className="flex-1 bg-zinc-50">
+      {/* Header band */}
+      <section className="border-b border-zinc-200 bg-white">
+        <div className={`${pad} py-10`}>
+          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-indigo-600">
+            Assessments
+          </p>
+          <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-zinc-900 sm:text-4xl">
+            All Tests
+          </h1>
         </div>
-      )}
+      </section>
+
+      {/* Body */}
+      <div className={`${pad} py-10`}>
+        {loading && <p className="text-zinc-500">Loading...</p>}
+        {error && <p className="text-red-600">{error}</p>}
+
+        <motion.div
+          initial="hidden"
+          animate="show"
+          variants={containerVariants}
+          className="flex flex-col gap-4"
+        >
+          {tests.map((test, index) => (
+            <motion.div
+              key={test._id}
+              variants={itemVariants}
+              className="flex flex-col gap-4 rounded-[3px] border border-zinc-200 bg-white p-6 transition-colors hover:border-indigo-300 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <div className="flex items-start gap-4">
+                <span className="text-xs font-bold tabular-nums text-indigo-600">
+                  {String((page - 1) * 5 + index + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h2 className="font-semibold text-zinc-900">{test.title}</h2>
+                  <p className="mt-0.5 text-sm text-zinc-600">{test.description}</p>
+                </div>
+              </div>
+              <Link
+                href={`/tests/${test._id}/instructions`}
+                className="shrink-0 cursor-pointer rounded-[2px] bg-indigo-600 px-4 py-2 text-center text-sm font-semibold uppercase tracking-wide text-white transition-colors hover:bg-indigo-700"
+              >
+                View test
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Pagination */}
+        {pagination && pagination.totalPages > 1 && (
+          <div className="mt-6 flex items-center justify-center gap-4">
+            <button onClick={() => setPage(page - 1)} disabled={page <= 1} className={pagerBtn}>
+              Previous
+            </button>
+            <span className="text-sm text-zinc-600">
+              Page {pagination.page} of {pagination.totalPages}
+            </span>
+            <button
+              onClick={() => setPage(page + 1)}
+              disabled={page >= pagination.totalPages}
+              className={pagerBtn}
+            >
+              Next
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

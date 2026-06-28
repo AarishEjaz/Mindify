@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
 const withPassword = require("./plugins/password");
 
-// Regular test-taking users live here. Admins are stored separately in
-// the Admin model/collection.
-const userSchema = new mongoose.Schema(
+// Admins live in their own collection, fully separate from regular users.
+// All admin data is stored here.
+const adminSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
     email: {
@@ -14,12 +14,13 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
     password: { type: String, required: true, minlength: 6 },
-    role: { type: String, default: "user", enum: ["user"] },
+    // Role is fixed to "admin" for every document in this collection.
+    role: { type: String, default: "admin", enum: ["admin"] },
   },
   { timestamps: true }
 );
 
 // Adds the password hashing hook + matchPassword() method.
-userSchema.plugin(withPassword);
+adminSchema.plugin(withPassword);
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("Admin", adminSchema);

@@ -102,20 +102,27 @@ function AdminQuestionsContent() {
   };
 
   const inputClass =
-    "w-full rounded-md border border-zinc-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none";
+    "w-full rounded-[2px] border border-zinc-300 px-3 py-2.5 text-sm transition-colors focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600";
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4 py-10">
-      <h1 className="mb-6 text-2xl font-semibold text-zinc-800">
+    <div className="mx-auto w-full max-w-4xl px-6 py-10 sm:px-10">
+      <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-indigo-600">
+        Admin
+      </p>
+      <h1 className="mb-8 mt-3 text-3xl font-extrabold tracking-tight text-zinc-900">
         Manage Questions
       </h1>
 
       {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
-      {message && <p className="mb-4 text-sm text-green-700">{message}</p>}
+      {message && (
+        <p className="mb-4 rounded-[2px] border-l-2 border-emerald-500 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
+          {message}
+        </p>
+      )}
 
       {/* Choose a test */}
       <div className="mb-8">
-        <label className="mb-1 block text-sm text-zinc-600">Select a test</label>
+        <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-zinc-500">Select a test</label>
         <select
           className={inputClass}
           value={selectedTestId}
@@ -134,27 +141,30 @@ function AdminQuestionsContent() {
         <>
           {/* Existing questions */}
           <div className="mb-10">
-            <h2 className="mb-3 font-semibold text-zinc-700">
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-zinc-500">
               Questions ({questions.length})
             </h2>
             <div className="flex flex-col gap-2">
               {questions.map((question, index) => (
                 <div
                   key={question._id}
-                  className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white p-3"
+                  className="flex items-center justify-between rounded-[3px] border border-zinc-200 bg-white p-3"
                 >
-                  <div className="pr-4">
-                    <p className="text-sm text-zinc-800">
-                      {index + 1}. {question.questionText}
-                    </p>
-                    <p className="text-xs text-zinc-500">
-                      Trait: {question.trait}
-                      {question.reverseScored ? " · reverse-scored" : ""}
-                    </p>
+                  <div className="flex gap-2.5 pr-4">
+                    <span className="text-xs font-bold tabular-nums text-indigo-600">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <div>
+                      <p className="text-sm text-zinc-800">{question.questionText}</p>
+                      <p className="mt-0.5 text-xs text-zinc-500">
+                        Trait: {question.trait}
+                        {question.reverseScored ? " · reverse-scored" : ""}
+                      </p>
+                    </div>
                   </div>
                   <button
                     onClick={() => toggleReverse(question)}
-                    className="shrink-0 rounded-md border border-zinc-300 px-3 py-1.5 text-xs text-zinc-700 hover:bg-zinc-100"
+                    className="shrink-0 cursor-pointer rounded-[2px] border border-zinc-300 px-3 py-1.5 text-xs text-zinc-700 transition-colors hover:bg-zinc-100"
                   >
                     {question.reverseScored
                       ? "Make normal"
@@ -166,11 +176,13 @@ function AdminQuestionsContent() {
           </div>
 
           {/* Create question form */}
-          <div className="rounded-lg border border-zinc-200 bg-white p-6">
-            <h2 className="mb-4 font-semibold text-zinc-700">Add a question</h2>
+          <div className="rounded-[3px] border border-zinc-200 bg-white p-6">
+            <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+              Add a question
+            </h2>
             <form onSubmit={handleCreate} className="flex flex-col gap-4">
               <div>
-                <label className="mb-1 block text-sm text-zinc-600">
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-zinc-500">
                   Question text
                 </label>
                 <textarea
@@ -182,7 +194,7 @@ function AdminQuestionsContent() {
               </div>
 
               <div>
-                <label className="mb-1 block text-sm text-zinc-600">Trait</label>
+                <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-zinc-500">Trait</label>
                 {selectedTest && selectedTest.traits.length > 0 ? (
                   <select
                     className={inputClass}
@@ -208,11 +220,12 @@ function AdminQuestionsContent() {
                 )}
               </div>
 
-              <label className="flex items-center gap-2 text-sm text-zinc-700">
+              <label className="flex cursor-pointer items-center gap-2 text-sm text-zinc-700">
                 <input
                   type="checkbox"
                   checked={reverseScored}
                   onChange={(e) => setReverseScored(e.target.checked)}
+                  className="h-4 w-4 cursor-pointer accent-indigo-600"
                 />
                 Reverse-scored question
               </label>
@@ -225,7 +238,7 @@ function AdminQuestionsContent() {
               <button
                 type="submit"
                 disabled={saving}
-                className="self-start rounded-md bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-60"
+                className="cursor-pointer self-start rounded-[2px] bg-indigo-600 px-5 py-2.5 text-sm font-semibold uppercase tracking-wide text-white transition-colors hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {saving ? "Saving..." : "Add question"}
               </button>
