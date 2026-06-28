@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
+import { Brain } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 // The top navigation bar. Sticky, sharp, and shows different links
@@ -28,7 +29,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-30 border-b border-zinc-200 bg-white/90 backdrop-blur">
       <nav className="flex items-center justify-between px-6 py-3.5 sm:px-10 lg:px-16">
         <Link href="/" className="flex items-center gap-2">
-          <span className="h-4 w-4 bg-indigo-600" />
+          <Brain className="h-5 w-5 text-indigo-600" strokeWidth={2.25} />
           <span className="text-base font-extrabold tracking-tight text-zinc-900">
             MINDIFY
           </span>
