@@ -4,8 +4,13 @@ import axios from "axios";
 // through here, so the base URL and the auth token are configured in a
 // single place.
 const api = axios.create({
-  // baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001/api" || "https://mindify-t7z8.onrender.com",
-  baseURL: "https://mindify-t7z8.onrender.com",
+  // IMPORTANT: every backend route lives under "/api" (e.g. /api/auth/login),
+  // so the base URL MUST end with "/api".
+  // Local dev reads NEXT_PUBLIC_API_URL from .env.local; the deployed build
+  // falls back to the Render backend below.
+  baseURL:
+    process.env.NEXT_PUBLIC_API_URL ||
+    "https://mindify-t7z8.onrender.com/api",
   headers: {
     "Content-Type": "application/json",
   },
