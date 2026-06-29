@@ -12,6 +12,12 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
 
+  // The immersive landing page ships its own dedicated navigation bar, so we
+  // hide this global one there to avoid a doubled-up header.
+  if (pathname === "/landing" || pathname.startsWith("/landing/")) {
+    return null;
+  }
+
   const handleLogout = () => {
     logout();
     router.push("/login");

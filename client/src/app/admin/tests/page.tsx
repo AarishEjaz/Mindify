@@ -105,14 +105,14 @@ function AdminTestsContent() {
   };
 
   const inputClass =
-    "w-full rounded-[2px] border border-zinc-300 px-3 py-2.5 text-sm transition-colors focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600";
+    "w-full rounded-[2px] border border-zinc-300 bg-white px-3 py-2.5 text-sm text-black placeholder-zinc-400 transition-colors focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600";
 
   return (
     <div className="mx-auto w-full max-w-4xl px-6 py-10 sm:px-10">
       <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-indigo-600">
         Admin
       </p>
-      <h1 className="mb-8 mt-3 text-3xl font-extrabold tracking-tight text-zinc-900">
+      <h1 className="mb-8 mt-3 text-3xl font-extrabold tracking-tight text-hite-900">
         Manage Tests
       </h1>
 

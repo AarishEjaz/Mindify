@@ -1,6 +1,20 @@
 @import "tailwindcss";
 
+/* Enable class-based dark mode: `dark:` utilities apply whenever a `.dark`
+   class sits on an ancestor. The landing page scopes `.dark` to its own
+   wrapper so the rest of the app stays light. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* When the landing wrapper is dark, hint native controls/scrollbars too. */
+.dark {
+  color-scheme: dark;
+}
+
 :root {
+  /* Force light rendering for the whole app — including native form
+     controls (inputs, selects, textareas, scrollbars) — so a user's
+     dark-mode OS does not flip them to dark and break the design. */
+  color-scheme: light;
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -8,19 +22,117 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ------------------------------------------------------------------ */
+/* Landing page motion & decoration                                    */
+/* These are lightweight, GPU-friendly (transform/opacity only)        */
+/* keyframes + helper utilities used by the immersive /landing page.    */
+/* Framer Motion handles scroll reveals; these handle the slow,         */
+/* ambient background motion that would be wasteful to drive in JS.     */
+/* ------------------------------------------------------------------ */
+
+/* Smooth in-page anchor scrolling for the landing nav. Disabled when the
+   user prefers reduced motion (see the reduced-motion block below). */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Soft drifting gradient "blobs" behind sections for depth/parallax. */
+@keyframes blob-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(3%, -4%, 0) scale(1.08);
+  }
+  66% {
+    transform: translate3d(-3%, 3%, 0) scale(0.95);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Gentle vertical bob for floating UI cards (the "3D" feel). */
+@keyframes float-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* The animated scroll cue in the hero. */
+@keyframes scroll-cue {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.lp-blob {
+  animation: blob-drift 22s ease-in-out infinite;
+  will-change: transform;
+}
+
+.lp-float {
+  animation: float-bob 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+.lp-scroll-cue {
+  animation: scroll-cue 1.8s ease-in-out infinite;
+}
+
+/* Slowly rotating decorative ring used for the hero's 3D depth. */
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.lp-spin-slow {
+  animation: spin-slow 26s linear infinite;
+  will-change: transform;
+}
+
+.lp-spin-slow-rev {
+  animation: spin-slow 34s linear infinite reverse;
+  will-change: transform;
+}
+
+/* Subtle dotted grid used as a depth layer in some sections. */
+.lp-grid {
+  background-image: radial-gradient(
+    circle at center,
+    rgba(79, 70, 229, 0.12) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+}
+
+/* Honor the user's reduced-motion preference: kill ambient animation
+   so the page stays calm and accessible. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .lp-blob,
+  .lp-float,
+  .lp-scroll-cue,
+  .lp-spin-slow,
+  .lp-spin-slow-rev {
+    animation: none !important;
+  }
 }
