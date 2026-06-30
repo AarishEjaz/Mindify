@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const cookieParser = require("cookie-parser")
 
 const { apiLimiter } = require("./middlewares/rateLimiter");
 const { notFound, errorHandler } = require("./middlewares/errorMiddleware");
@@ -14,6 +15,7 @@ const adminRoutes = require("./routes/adminRoutes");
 // This file builds the Express app. server.js then starts it. Keeping
 // them separate makes the app easy to test and read.
 const app = express();
+app.use(cookieParser())
 
 // --- Core middleware ---
 app.use(
