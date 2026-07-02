@@ -18,9 +18,14 @@ const app = express();
 app.use(cookieParser())
 
 // --- Core middleware ---
+// credentials:true lets the browser send/receive the auth cookie on
+// cross-origin requests. When credentials are allowed the origin MUST be an
+// explicit URL (the "*" wildcard is rejected by browsers in that mode), so
+// CLIENT_URL is required for the cookie flow to work.
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "*",
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    credentials: true,
   })
 );
 app.use(express.json()); // parse JSON request bodies

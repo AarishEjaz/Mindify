@@ -1,11 +1,12 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import api, { TOKEN_KEY, getErrorMessage } from "@/lib/api";
+import api, { getErrorMessage } from "@/lib/api";
 import { User } from "@/lib/types";
 
 // Key used to store the user object in localStorage (so a page refresh
-// keeps the user logged in).
+// keeps the user logged in). NOTE: this is only the non-sensitive public
+// user profile — the auth token lives in an httpOnly cookie, never here.
 const USER_KEY = "psychometric_user";
 
 // The shape of everything the context provides to the rest of the app.
@@ -15,7 +16,7 @@ interface AuthContextValue {
   login: (email: string, password: string) => Promise<User>;
   loginAdmin: (email: string, password: string) => Promise<User>;
   register: (name: string, email: string, password: string) => Promise<User>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -34,9 +35,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   }, []);
 
-  // Save the token + user after a successful login or register.
-  const saveSession = (token: string, loggedInUser: User) => {
-    localStorage.setItem(TOKEN_KEY, token);
+  // Save the user after a successful login or register. The token itself is
+  // set by the server as an httpOnly cookie, so there's nothing token-related
+  // to store here.
+  const saveSession = (loggedInUser: User) => {
     localStorage.setItem(USER_KEY, JSON.stringify(loggedInUser));
     setUser(loggedInUser);
   };
@@ -44,8 +46,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       const response = await api.post("/auth/login", { email, password });
-      const { token, user: loggedInUser } = response.data.data;
-      saveSession(token, loggedInUser);
+      const { user: loggedInUser } = response.data.data;
+      saveSession(loggedInUser);
       return loggedInUser as User;
     } catch (error) {
       throw new Error(getErrorMessage(error));
@@ -56,8 +58,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const loginAdmin = async (email: string, password: string) => {
     try {
       const response = await api.post("/auth/admin/login", { email, password });
-      const { token, user: loggedInUser } = response.data.data;
-      saveSession(token, loggedInUser);
+      const { user: loggedInUser } = response.data.data;
+      saveSession(loggedInUser);
       return loggedInUser as User;
     } catch (error) {
       throw new Error(getErrorMessage(error));
@@ -67,16 +69,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const register = async (name: string, email: string, password: string) => {
     try {
       const response = await api.post("/auth/register", { name, email, password });
-      const { token, user: newUser } = response.data.data;
-      saveSession(token, newUser);
+      const { user: newUser } = response.data.data;
+      saveSession(newUser);
       return newUser as User;
     } catch (error) {
       throw new Error(getErrorMessage(error));
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem(TOKEN_KEY);
+  const logout = async () => {
+    // Ask the server to expire the httpOnly cookie — the client can't delete
+    // it directly. Clear local state regardless of the request's outcome.
+    try {
+      await api.post("/auth/logout");
+    } catch {
+      // Ignore network/errors here; we still log the user out locally.
+    }
     localStorage.removeItem(USER_KEY);
     setUser(null);
   };
