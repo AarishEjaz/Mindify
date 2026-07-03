@@ -3,7 +3,6 @@ const Admin = require("../models/Admin");
 const ApiError = require("../utils/ApiError");
 const asyncHandler = require("../utils/asyncHandler");
 const generateToken = require("../utils/generateToken");
-const { setAuthCookie, clearAuthCookie } = require("../utils/cookies");
 const { sendSuccess } = require("../utils/apiResponse");
 
 // Build the safe user object we send back (never include the password).
@@ -29,12 +28,11 @@ const register = asyncHandler(async (req, res) => {
   const user = await User.create({ name, email, password });
   const token = generateToken(user._id, "user");
 
-  // Deliver the token as an httpOnly cookie instead of in the body, so it
-  // can't be read (or stolen via XSS) by client-side JavaScript.
-  setAuthCookie(res, token);
-
+  // Token is returned in the body; the client stores it and sends it back
+  // as an "Authorization: Bearer <token>" header on each request.
   sendSuccess(res, 201, "Registration successful", {
     user: toPublicUser(user),
+    token,
   });
 });
 
@@ -60,10 +58,9 @@ const login = asyncHandler(async (req, res) => {
   const user = await authenticate(User, email, password);
   const token = generateToken(user._id, "user");
 
-  setAuthCookie(res, token);
-
   sendSuccess(res, 200, "Login successful", {
     user: toPublicUser(user),
+    token,
   });
 });
 
@@ -73,10 +70,9 @@ const adminLogin = asyncHandler(async (req, res) => {
   const admin = await authenticate(Admin, email, password);
   const token = generateToken(admin._id, "admin");
 
-  setAuthCookie(res, token);
-
   sendSuccess(res, 200, "Admin login successful", {
     user: toPublicUser(admin),
+    token,
   });
 });
 
@@ -85,12 +81,4 @@ const getMe = asyncHandler(async (req, res) => {
   sendSuccess(res, 200, "Current user", { user: toPublicUser(req.user) });
 });
 
-// POST /api/auth/logout  (public) - clear the auth cookie. Since the token
-// lives in an httpOnly cookie, the client can't remove it itself, so the
-// server has to expire it.
-const logout = asyncHandler(async (req, res) => {
-  clearAuthCookie(res);
-  sendSuccess(res, 200, "Logged out");
-});
-
-module.exports = { register, login, adminLogin, getMe, logout };
+module.exports = { register, login, adminLogin, getMe };

@@ -9,21 +9,14 @@ const asyncHandler = require("../utils/asyncHandler");
 // from the correct collection and attach it to req.user. req.userType
 // holds "user" or "admin" for later checks (e.g. adminOnly).
 const protect = asyncHandler(async (req, res, next) => {
-  // Prefer the httpOnly cookie (set at login). Fall back to the
-  // "Authorization: Bearer <token>" header so non-browser API clients
-  // (scripts, tests) still work.
-  let token = req.cookies?.token;
+  // The client sends the token as "Authorization: Bearer <token>".
+  const authHeader = req.headers.authorization;
 
-  if (!token) {
-    const authHeader = req.headers.authorization;
-    if (authHeader && authHeader.startsWith("Bearer ")) {
-      token = authHeader.split(" ")[1];
-    }
-  }
-
-  if (!token) {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     throw new ApiError(401, "Not authorized, no token provided");
   }
+
+  const token = authHeader.split(" ")[1];
 
   let decoded;
   try {

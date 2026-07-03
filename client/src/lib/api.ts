@@ -14,10 +14,22 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  // Send/receive the httpOnly auth cookie on every request. The token is no
-  // longer kept in localStorage (which is readable by any script, so a token
-  // there is exposed to XSS) — the browser attaches the cookie automatically.
-  withCredentials: true,
+});
+
+// Key used to store the JWT in the browser's localStorage.
+export const TOKEN_KEY = "psychometric_token";
+
+// Request interceptor: before each request, attach the saved token (if
+// any) as a Bearer token. We check for "window" because this code can
+// also run on the server, where localStorage does not exist.
+api.interceptors.request.use((config) => {
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem(TOKEN_KEY);
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
 });
 
 // Helper that pulls a readable message out of an axios error, so pages

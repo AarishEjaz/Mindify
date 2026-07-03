@@ -6,7 +6,6 @@ const {
   login,
   adminLogin,
   getMe,
-  logout,
 } = require("../controllers/authController");
 const { protect } = require("../middlewares/authMiddleware");
 const { validate } = require("../middlewares/validate");
@@ -19,6 +18,5 @@ router.post("/register", authLimiter, registerRules, validate, register);
 router.post("/login", authLimiter, loginRules, validate, login);
 router.post("/admin/login", authLimiter, loginRules, validate, adminLogin);
 router.get("/me", protect, getMe);
-router.post("/logout", logout);
 
 module.exports = router;
