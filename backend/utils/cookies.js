@@ -23,8 +23,8 @@ const cookieOptions = () => {
   return {
     httpOnly: true,
     // "none" cookies are rejected by browsers unless they're also secure.
-    secure: isProd() || same === "none",
-    sameSite: same,
+    secure:false, // isProd() || same === "none",
+    sameSite: none, //same 
     // Match the token's own lifetime so the cookie doesn't outlive the JWT.
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
     path: "/",

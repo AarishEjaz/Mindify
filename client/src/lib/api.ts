@@ -8,9 +8,9 @@ const api = axios.create({
   // so the base URL MUST end with "/api".
   // Local dev reads NEXT_PUBLIC_API_URL from .env.local; the deployed build
   // falls back to the Render backend below.
-  baseURL:
-    process.env.NEXT_PUBLIC_API_URL ||
-    "https://mindify-t7z8.onrender.com/api",
+  // baseURL: "http://localhost:5001/api",
+    // process.env.NEXT_PUBLIC_API_URL ||
+     baseURL: "https://mindify-t7z8.onrender.com/api",
   headers: {
     "Content-Type": "application/json",
   },
